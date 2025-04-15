@@ -164,7 +164,6 @@ This allows the project to demonstrate its AI capabilities on **external, realis
 ## 🧠 Authors
 
 **Germano Correa Silva de Carvalho**  
-**Parker Nunley**
 
 University of West Florida  
 CAP 4601 – Introduction to Artificial Intelligence  
