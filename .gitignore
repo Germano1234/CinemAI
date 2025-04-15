@@ -1,0 +1,56 @@
+# === PYTHON ===
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+venv/
+.env
+*.sqlite3
+
+# === Jupyter Notebooks ===
+.ipynb_checkpoints/
+
+# === WINDOWS ===
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# === VISUAL STUDIO / C# ===
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Bb]in/
+[Oo]bj/
+*.exe
+*.dll
+*.pdb
+*.cache
+*.log
+
+# Visual Studio Code
+.vscode/
+
+# === DOTNET ===
+*.dbmdl
+*.dbproj.schemaview
+*.bak
+*.mdf
+*.ldf
+*.resx
+*.Designer.cs
+
+# === SYSTEM FILES ===
+.DS_Store
+*.tmp
+*.log
+
+# === NODE (if used) ===
+node_modules/
+npm-debug.log
