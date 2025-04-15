@@ -83,7 +83,7 @@ The database is a **normalized relational schema** that holds all business logic
 🧠 Movie data (especially genres and descriptions) are used by the AI backend.
 
 🖼️ **Entity Relationship Diagram:**  
-![SQL Diagram](./databaseDiagram.png)
+![SQL Diagram](screenshots/databaseDiagram.png)
 
 ---
 
