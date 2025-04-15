@@ -1,170 +1,125 @@
-# 🎬 CinemAI: Hybrid AI Movie Recommendation System
+# 🎬 CinemAI – Movie Theater Ticketing System with AI-Powered Movie Recommendations
 
-CinemAI is an intelligent movie recommendation system built with a C# WinForms frontend, a Python AI backend, and a SQL Server relational database. It supports smart recommendations based on user preferences and watch history using AI techniques like NLP, TF-IDF, and K-Nearest Neighbors.
+**CinemAI** is a complete desktop application for movie browsing, intelligent recommendations, ticket purchasing, and theater management. Built using **C# Windows Forms**, **Python Flask**, and **SQL Server**, it offers an intuitive interface for both customers and administrators.
 
 ---
 
-## 🟦 PART 1: C# + Windows Forms Frontend
+## 🟦 PART 1: C# Windows Forms Frontend
 
-The main interface for CinemAI is a Windows Forms application written in C#.
+The frontend is developed with **C# and WinForms**, split into two interfaces: one for customers and another for staff.
 
-### 📂 Project Structure (matches screenshot)
+![Fisrst Screen](screenshots/Base.png)
 
-```
-├── Model
-│   ├── Movie.cs
-│   ├── MovieForAPI.cs
-│   ├── Room.cs
-│   ├── Showtime.cs
-│   ├── Ticket.cs
-│   └── User.cs
-│
-├── Repository
-│   ├── RMovie.cs
-│   ├── RRoom.cs
-│   ├── RShowTime.cs
-│   ├── RTicket.cs
-│   └── RUser.cs
-│
-├── View
-│   ├── FrmMovies.cs              👈 Main form that shows movies
-│   ├── FrmSeatSelection.cs       👈 Seat booking
-│   ├── FrmVDTicket.cs            👈 Ticket detail view
-│   ├── FrmViewAll.cs             👈 Admin view all tickets
-│   ├── FrmLogIn.cs               👈 Login page
-│   └── (Others)
-│
-├── Resources/
-│   └── Green.png / Red.png / yellow.PNG (status icons)
-├── Program.cs
-```
+### 👤 User Interface (Customers)
+All customer features are centralized in a clean, unified experience via `FrmMovies.cs`.
 
-### 🧠 C# AI Integration
+- 🔐 **Sign Up / Log In** (`FrmLogIn.cs`)
+- 🎬 **Browse Movies** – View posters, descriptions, genres
+- 🧠 **AI Recommendation** – Enter a query and get a suggested movie, and check the reccomendation based on user profile
+- ⏰ **Select Showtime** – Choose a date/time for your preferred movie
+- 🪑 **Seat Selection** – Interactive map to choose seats (`FrmSeatSelection.cs`)
+- 🎫 **PDF Ticket Generation** – Confirm booking and get a printable ticket (`FrmVDTicket.cs`)
 
-The app communicates with the Python Flask API by sending JSON data via HTTP.
+📸 **Sample Screenshots:**
 
-#### 🔁 For `/recommend_from_list`:
-- Gathers movies from SQL using `RMovie.getAll()`
-- Builds `MovieForAPI` objects with title, genre, and description
-- Sends user input text + list of movies to the Flask API
-- Displays returned movie in a label (e.g., "Try: Shrek")
+| `FrmLogIn.cs` (Login) | `FrmMovies.cs` (Movie Browser + AI) |
+|-----------------------|--------------------------------------|
+| ![Login](screenshots/login.png) | ![Movies](screenshots/movies_ai.png) |
 
-#### 🔁 For `/recommend_by_history`:
-- Uses `RTicket.GetWatchedMoviesByUserId(userId)`
-- Sends watched + all movies to the API
-- Displays the top recommendation for the user at login
+| `FrmSeatSelection.cs` (Seat Map) | `FrmVDTicket.cs` (Ticket Confirmation) |
+|----------------------------------|-----------------------------------------|
+| ![Seat Selection](screenshots/seats.png) | ![Ticket](screenshots/ticket.png) |
+
+---
+
+### 🛠️ Worker/Admin Interface
+
+When a **worker** logs in, CinemAI switches to **admin mode**, allowing theater staff to manage all core data.
+
+- 📽️ **Manage Movies** (`FrmManageMovies.cs`)
+- 🧍‍♂️ **Manage Users** (`FrmManageUsers.cs`)
+- 🏛️ **Manage Rooms** (`FrmManageRooms.cs`)
+- 📆 **Manage Showtimes** (`FrmManageShowtimes.cs`)
+- 🎟️ **View Tickets** (`FrmViewAll.cs`)
+
+📸 **Sample Screenshots:**
+
+![Worker](screenshots/worker.png)
 
 ---
 
 ## 🟩 PART 2: Python Flask AI Backend
 
-The backend logic is written in Python and uses Flask to expose two smart endpoints.
+CinemAI uses a **Flask API** with **Natural Language Processing (NLP)** and **Machine Learning** to generate movie recommendations.
 
-### 🧠 AI Concepts Used
+### 🔍 AI Techniques
+- **TextBlob** – Corrects typos (e.g., “romnatic” → *romantic*)
+- **Fuzzy NLP** – Matches genres from input
+- **TF-IDF + Cosine Similarity** – Understands movie descriptions
+- **KNN** – Finds similar movies based on past watches
+- **Hybrid Scoring** – 60% genre match, 40% description match
 
-| Concept | Description |
-|--------|-------------|
-| **TextBlob** | Fixes typos in input like “romnatic” |
-| **Fuzzy NLP** | Extracts genres using synonyms and near-matches |
-| **TF-IDF** | Encodes movie descriptions into numeric vectors |
-| **Cosine Similarity** | Measures semantic distance between text |
-| **KNN** | Recommends similar movies to previously watched ones |
-| **Hybrid Scoring** | Combines genre matching (60%) + text similarity (40%) |
+### 🔌 Endpoints
+- `/recommend_from_list` – Uses user text + movie data to suggest a title
+- `/recommend_by_history` – Uses watch history + all movies to suggest what's next
 
----
-
-### 📬 Flask Endpoints
-
-#### 1. `/recommend_from_list` — NLP from user text
-
-Input:
-```json
-{
-  "text": "I want a romantic comedy",
-  "movies": [{ "title": "...", "genre": "...", "description": "..." }]
-}
-```
-
-Output:
-```json
-{ "recommendations": ["The Notebook"] }
-```
-
-#### 2. `/recommend_by_history` — Based on watched movies
-
-Input:
-```json
-{
-  "watched": [ ... ],
-  "all_movies": [ ... ]
-}
-```
-
-Output:
-```json
-{ "recommendations": ["Titanic"] }
-```
-
-✅ Includes fallback when input is unclear  
-✅ Automatically removes already-watched movies
+⚙️ The C# app communicates with these endpoints using `HttpClient` and displays the response directly in the interface (`FrmMovies.cs`).
 
 ---
 
-## 🟨 PART 3: SQL Server Relational Database
+## 🟨 PART 3: SQL Server Database
 
-The app uses a normalized relational schema for all core data.
+The database is a **normalized relational schema** that holds all business logic data.
 
-### 🧱 Tables
+### 🧱 Core Tables
+| Table     | Description |
+|-----------|-------------|
+| `User`    | Login credentials and roles |
+| `Movie`   | Movie title, genre, description, rating |
+| `Room`    | Room info with 3D support |
+| `Showtime`| Date/time info tied to rooms & movies |
+| `Ticket`  | Links users to seats, showtimes, and movies |
 
-- `User` – stores login info and user role
-- `Movie` – movie catalog (title, description, genre, rating, etc.)
-- `Room` – theater rooms with 3D flag
-- `Showtime` – specific movie showings
-- `Ticket` – purchased tickets (links user → showtime → movie)
+🧠 Movie data (especially genres and descriptions) are used by the AI backend.
 
-### 🔑 Relationships
-
-- A `Ticket` links a `CustumerID` (user) to a `Showtime`
-- A `Showtime` links to a `Movie` and a `Room`
-- Movie genre info is used by the AI in the recommendation process
-
-### 🖼️ Database Diagram
-
+🖼️ **Entity Relationship Diagram:**  
 ![SQL Diagram](./databaseDiagram.png)
 
 ---
 
-### 🗂️ Additional: `app_large.py` – AI Testing with External Dataset
+## 🗂️ PART 4: `app_large.py` – Testing AI with External Dataset
 
-The file `app_large.py` is an alternative version of the Flask API that does **not depend on the SQL Server or the C# application**. Instead, it loads a large dataset of over 5,000 movies directly from a `.csv` file (`large_movies.csv`) and performs recommendations purely in Python.
+The file `app_large.py` runs an alternate version of the Flask API that uses a dataset of 5,000+ movies from **TMDB** (via Kaggle), independent of SQL or C#.
 
-This version is used for **offline testing and evaluation**, and it supports the same endpoints (`/recommend_from_list_large`, `/recommend_by_history_large`) with the same hybrid AI logic (genres + descriptions).
+- ✅ For testing AI at scale
+- ✅ Endpoints: `/recommend_from_list_large`, `/recommend_by_history_large`
 
-#### 📚 Dataset Source (for `large_movies.csv`)
-> TMDB 5000 Movie Dataset  
-> https://www.kaggle.com/datasets/tmdb/tmdb-movie-metadata  
-> Provided by The Movie Database (TMDb) via Kaggle, licensed for academic and non-commercial use.
-
-This allows the project to demonstrate its AI capabilities on **external, realistic movie data** beyond the SQL-bound system.
+📚 **Dataset Source:**  
+[TMDB 5000 Movie Dataset – Kaggle](https://www.kaggle.com/datasets/tmdb/tmdb-movie-metadata)
 
 ---
 
-## ✅ Technologies Used
+## ✅ Tech Stack
 
 | Layer        | Tools |
 |--------------|-------|
-| Frontend     | C#, WinForms |
+| Frontend     | C#, Windows Forms |
 | Backend (AI) | Python, Flask, scikit-learn |
-| NLP          | TextBlob, TF-IDF, cosine similarity |
+| NLP & ML     | TextBlob, TF-IDF, cosine similarity, KNN |
 | Database     | SQL Server |
-| API          | JSON over HTTP (via `HttpClient` in C#) |
+| Integration  | JSON over HTTP (via `HttpClient`) |
+| PDF Export   | iTextSharp (C#) |
 
 ---
 
-## 🧠 Authors
+## 👨‍💻 Author
 
 **Germano Correa Silva de Carvalho**  
-
 University of West Florida  
-CAP 4601 – Introduction to Artificial Intelligence  
-Spring 2025
+Course: CAP 4601 – Introduction to Artificial Intelligence  
+Spring 2025  
+GitHub: [Germano1234](https://github.com/Germano1234)
+
+---
+
+> 📝 **Note:** CinemAI was originally developed for an AI course, but has grown into a full-featured cinema management system with intelligent features and real-world integration.
